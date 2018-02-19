@@ -1,0 +1,10 @@
+.split-pane:horizontal > .split-pane-divider {
+   -fx-background-color: #3c3f41;
+}
+
+.tree-cell {
+    -fx-background-color: #3c3f41 ;
+    -fx-text-fill: #ffffff ;
+}
+
+

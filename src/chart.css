@@ -1,0 +1,20 @@
+.chart-plot-background {
+    -fx-background-color: #3c3f41;
+}
+.chart-vertical-grid-lines {
+    -fx-stroke: #f5f5f5;
+}
+.chart-horizontal-grid-lines {
+    -fx-stroke: #f5f5f5;
+}
+.chart-alternative-column-fill {
+    -fx-fill: dimgrey;
+    -fx-stroke: transparent;
+    -fx-stroke-width: 0;
+}
+.chart-title {
+-fx-text-fill: #f5f5f5;
+}
+.axis-label {
+-fx-text-fill: #f5f5f5;
+}

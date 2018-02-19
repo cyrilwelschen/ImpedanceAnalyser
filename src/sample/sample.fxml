@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="870.0" prefWidth="1660.0" style="-fx-background-color: #2b2b2b;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <children>
+      <BorderPane layoutX="323.0" layoutY="217.0" prefHeight="670.0" prefWidth="1160.0" style="-fx-background-color: #2b2b2b;" stylesheets="@../maincss.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <SplitPane dividerPositions="0.12" style="-fx-background-color: #2b2b2b;" BorderPane.alignment="CENTER">
+               <items>
+                  <TreeView fx:id="directoryTreeView" style="-fx-background-color: #2b2b2b;">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding></TreeView>
+                  <AnchorPane style="-fx-background-color: #2b2b2b;">
+                     <children>
+                        <StackPane fx:id="chartContainer" prefHeight="809.0" prefWidth="1355.0" style="-fx-background-color: #2b2b2b;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <LineChart fx:id="impedanceLineChart" stylesheets="@../chart.css" title="Impedance vs Distance">
+                                <xAxis>
+                                  <NumberAxis side="BOTTOM" style="-fx-background-color: #2b2b2b;" tickLabelFill="#e1d8d8" fx:id="xAxis" />
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis fx:id="yAxis" side="LEFT" style="-fx-background-color: #2b2b2b;" tickLabelFill="#e1d8d8" />
+                                </yAxis>
+                              </LineChart>
+                           </children>
+                        </StackPane>
+                     </children>
+                  </AnchorPane>
+               </items>
+            </SplitPane>
+         </center>
+         <top>
+            <HBox spacing="10.0" style="-fx-background-color: #2b2b2b;" BorderPane.alignment="CENTER">
+               <children>
+                  <TextField fx:id="workingDirectoryTextField" editable="false" prefHeight="23.0" style="-fx-background-color: dimgrey;" text="Select a working directory" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font name="Tahoma" size="12.0" />
+                     </font>
+                  </TextField>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+         </top>
+      </BorderPane>
+   </children>
+</AnchorPane>
