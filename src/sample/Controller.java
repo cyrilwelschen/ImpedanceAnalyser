@@ -11,11 +11,14 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafx.scene.control.Dialog;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -76,6 +79,55 @@ public class Controller {
         yAxis.setLowerBound(-20);
         yAxis.setUpperBound(80);
         yAxis.setTickUnit(10);
+        xAxis.setOnMouseClicked((MouseEvent event) -> {
+            Dialog<String> setXDialog = new Dialog<>();
+            setXDialog.setTitle("Reset x range");
+            Label minXLabel = new Label("Min: ");
+            Label maxXLabel = new Label("Max: ");
+            TextField minXInput = new TextField();
+            TextField maxXInput = new TextField();
+            GridPane setXGrid = new GridPane();
+            setXGrid.add(minXLabel, 1,1);
+            setXGrid.add(minXInput, 2,1);
+            setXGrid.add(maxXLabel, 3,1);
+            setXGrid.add(maxXInput, 4,1);
+            setXDialog.getDialogPane().setContent(setXGrid);
+            ButtonType buttonOk = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+            setXDialog.getDialogPane().getButtonTypes().add(buttonOk);
+            setXDialog.showAndWait();
+            System.out.println(minXInput.getText());
+            System.out.println(maxXInput.getText());
+        });
+
+        yAxis.setOnMouseClicked((MouseEvent event) -> {
+            Dialog<String> setXDialog = new Dialog<>();
+            setXDialog.setTitle("Reset y range");
+            Label minXLabel = new Label("Min: ");
+            Label maxXLabel = new Label("Max: ");
+            TextField minXInput = new TextField();
+            TextField maxXInput = new TextField();
+            GridPane setXGrid = new GridPane();
+            setXGrid.add(minXLabel, 1,1);
+            setXGrid.add(minXInput, 2,1);
+            setXGrid.add(maxXLabel, 3,1);
+            setXGrid.add(maxXInput, 4,1);
+            setXDialog.getDialogPane().setContent(setXGrid);
+            ButtonType buttonOk = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+            setXDialog.getDialogPane().getButtonTypes().add(buttonOk);
+            setXDialog.showAndWait();
+            System.out.println(minXInput.getText());
+            System.out.println(maxXInput.getText());
+        });
+        resetAxis(yAxis, -30.0, 120.0);
+    }
+
+
+    private void resetAxis(NumberAxis axis, Double bound1, Double bound2) {
+        Double lowerBound = min(bound1, bound2);
+        Double upperBound = max(bound1, bound2);
+        axis.setLowerBound(lowerBound);
+        axis.setUpperBound(upperBound);
+        axis.setTickUnit((upperBound - lowerBound)/10);
     }
 
     private void setFileTreeView(File workingDirectory) throws IOException {
@@ -117,6 +169,8 @@ public class Controller {
                             } catch (IOException | InterruptedException e) {
                                 e.printStackTrace();
                             }
+                        } else {
+                            System.out.println("Hidden Calculated file already exists. Not calculating it again!");
                         }
                         readCsv(currentPath);
                     } else { // todo: make this counter through business nicer
@@ -220,24 +274,26 @@ public class Controller {
             axisController.setNewXMinYMax(newXMin, newYMax);
         });
         zoomingNode.setOnMouseReleased(event -> {
-            double xS = event.getSceneX();
-            double yS = event.getSceneY();
-            final NumberAxis xAxisZ = (NumberAxis) impedanceLineChart.getXAxis();
-            double AXxS = xAxisZ.localToScene(0, 0).getX();
-            final NumberAxis yAxisZ = (NumberAxis) impedanceLineChart.getYAxis();
-            double AYyS = yAxisZ.localToScene(0, 0).getY();
-            double newXMax = (xS - AXxS) / xAxisZ.getScale();
-            double newYMin = (yS - AYyS) / yAxisZ.getScale() + 80.0;
-            double newXMin = axisController.getNewXMin();
-            double newYMax = axisController.getNewYMax();
-            xAxisZ.setLowerBound(min(newXMin, newXMax));
-            xAxisZ.setUpperBound(max(newXMin, newXMax));
-            yAxisZ.setLowerBound(min(newYMin, newYMax));
-            yAxisZ.setUpperBound(max(newYMin, newYMax));
-            xAxisZ.setTickUnit((max(newXMin, newXMax)- min(newXMin, newXMax)) / 12);
-            yAxisZ.setTickUnit((max(newYMin, newYMax) - min(newYMin, newYMax)) / 10);
-            rect.setWidth(0);
-            rect.setHeight(0);
+            if (rect.getWidth() > 10 && rect.getHeight() > 10) {
+                double xS = event.getSceneX();
+                double yS = event.getSceneY();
+                final NumberAxis xAxisZ = (NumberAxis) impedanceLineChart.getXAxis();
+                double AXxS = xAxisZ.localToScene(0, 0).getX();
+                final NumberAxis yAxisZ = (NumberAxis) impedanceLineChart.getYAxis();
+                double AYyS = yAxisZ.localToScene(0, 0).getY();
+                double newXMax = (xS - AXxS) / xAxisZ.getScale();
+                double newYMin = (yS - AYyS) / yAxisZ.getScale() + 80.0;
+                double newXMin = axisController.getNewXMin();
+                double newYMax = axisController.getNewYMax();
+                xAxisZ.setLowerBound(min(newXMin, newXMax));
+                xAxisZ.setUpperBound(max(newXMin, newXMax));
+                yAxisZ.setLowerBound(min(newYMin, newYMax));
+                yAxisZ.setUpperBound(max(newYMin, newYMax));
+                xAxisZ.setTickUnit((max(newXMin, newXMax) - min(newXMin, newXMax)) / 12);
+                yAxisZ.setTickUnit((max(newYMin, newYMax) - min(newYMin, newYMax)) / 10);
+                rect.setWidth(0);
+                rect.setHeight(0);
+            }
         });
         zoomingNode.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {

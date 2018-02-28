@@ -32,7 +32,10 @@ def load_waveform_measurement_dic(filename):
                     clean_row.append(float(row_item.replace(",", ".")))
                 except ValueError:
                     clean_row.append(0)
-            clean_data.append(clean_row)
+            if sum(clean_row) == 0:
+                continue
+            else:
+                clean_data.append(clean_row)
         d = np.array(clean_data, dtype=float).T
         #check for additional headers
     elif device_code == "dig":
