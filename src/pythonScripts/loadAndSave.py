@@ -5,21 +5,38 @@ import os
 import numpy as np
 import csv
 
+def test_format(filename):
+    with open(filename, 'r') as f:
+        reader = csv.reader(f, delimiter=',')
+        row1_column = next(reader)
+        if len(row1_column) == 1:
+            if row1_column[0][:3] == "#Di":
+                return ",", "dig"
+            else:
+                return ";", "vna"
+        else:
+            return ",", "vna"
 
 def load_waveform_measurement_dic(filename):
-    if "\\" in filename:
-        file_to_open =  filename
-    else:
-        file_to_open = 'files/{}.csv'.format(filename)
-    with open(file_to_open, 'r') as f:
-        reader = csv.reader(f, delimiter=',')
+    delimiter_to_use, device_code = test_format(filename)
+    with open(filename, 'r') as f:
+        reader = csv.reader(f, delimiter=delimiter_to_use)
         data_as_list = list(reader)
-    col_names = data_as_list[5]
-    try:
-        if isinstance(float(col_names[0]), float):
-            col_names = data_as_list[0]
-            d = np.array(data_as_list[1:], dtype=float).T
-    except ValueError:
+    if device_code == "vna":
+        col_names = data_as_list[0]
+        clean_data = []
+        for row in data_as_list[1:]:
+            clean_row = []
+            for row_item in row:
+                try:
+                    clean_row.append(float(row_item.replace(",", ".")))
+                except ValueError:
+                    clean_row.append(0)
+            clean_data.append(clean_row)
+        d = np.array(clean_data, dtype=float).T
+        #check for additional headers
+    elif device_code == "dig":
+        col_names = data_as_list[5]
         d = np.array(data_as_list[6:], dtype=float).T
 
     this_measure = {}

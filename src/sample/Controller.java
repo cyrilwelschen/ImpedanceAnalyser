@@ -153,6 +153,11 @@ public class Controller {
     }
 
     private void calculateInverseFourierTransform(Path pathToFile) throws IOException {
+        System.out.println("Python version is:");
+        String pythonVersionCommand = "python --version";
+        Process pythonVersionProcess = Runtime.getRuntime().exec(pythonVersionCommand);
+        BufferedReader stdInput = new BufferedReader(new InputStreamReader(pythonVersionProcess.getInputStream()));
+        System.out.println(stdInput.readLine());
         String command = "python ./src/pythonScripts/loadAndSave.py " + pathToFile;
         Runtime.getRuntime().exec(command);
     }
