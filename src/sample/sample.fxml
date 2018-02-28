@@ -16,7 +16,7 @@
    <children>
       <BorderPane layoutX="323.0" layoutY="217.0" prefHeight="670.0" prefWidth="1160.0" style="-fx-background-color: #2b2b2b;" stylesheets="@../maincss.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
-            <SplitPane dividerPositions="0.12" style="-fx-background-color: #2b2b2b;" BorderPane.alignment="CENTER">
+            <SplitPane dividerPositions="0.18" style="-fx-background-color: #2b2b2b;" BorderPane.alignment="CENTER">
                <items>
                   <TreeView fx:id="directoryTreeView" style="-fx-background-color: #2b2b2b;">
                      <padding>
