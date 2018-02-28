@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ImpedanceAnalyser:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ImpedanceAnalyser_jar</output-path>
+    <root id="archive" name="ImpedanceAnalyser.jar">
+      <element id="module-output" name="ImpedanceAnalyser" />
+    </root>
+  </artifact>
+</component>
