@@ -12,6 +12,8 @@ def test_format(filename):
         if len(row1_column) == 1:
             if row1_column[0][:3] == "#Di":
                 return ",", "dig"
+            elif row1_column[0][:3] == "[He":
+                return ";", "kur"
             else:
                 return ";", "vna"
         else:
@@ -37,10 +39,26 @@ def load_waveform_measurement_dic(filename):
             else:
                 clean_data.append(clean_row)
         d = np.array(clean_data, dtype=float).T
-        #check for additional headers
     elif device_code == "dig":
         col_names = data_as_list[5]
         d = np.array(data_as_list[6:], dtype=float).T
+    elif device_code == "kur":
+        col_names = ["Frequency(Hz)", "|Z|", "Phase(deg)"]
+        clean_data = []
+        start_to_save = False
+        for row in data_as_list[1:]:
+            clean_row = []
+            for row_item in row:
+                if row_item == "X Wert":
+                    start_to_save = True
+                if start_to_save:
+                    try:
+                        clean_row.append(float(row_item))
+                    except ValueError:
+                        continue
+            if len(clean_row) == 2:
+                clean_data.append(clean_row+[0])
+        d = np.array(clean_data, dtype=float).T
 
     this_measure = {}
     for i, c in enumerate(col_names):
