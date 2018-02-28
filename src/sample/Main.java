@@ -18,7 +18,7 @@ public class Main extends Application {
         mainScene.setFill(Color.DARKGREY);
         primaryStage.setScene(mainScene);
         primaryStage.setMaximized(true);
-        Image appIcon = new Image("file:ia_icon.png");
+        Image appIcon = new Image("resources/ia_icon.png");
         primaryStage.getIcons().add(appIcon);
         primaryStage.show();
     }
