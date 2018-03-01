@@ -71,71 +71,16 @@ public class Controller {
         zoomRect.setAccessibleText("Rectangle");
         chartContainer.getChildren().add(zoomRect);
         setUpZooming(zoomRect, impedanceLineChart);
-        xAxis.setAutoRanging(false);
-        yAxis.setAutoRanging(false);
-        xAxis.setLowerBound(0);
-        xAxis.setUpperBound(5000);
-        xAxis.setTickUnit(200);
-        yAxis.setLowerBound(-20);
-        yAxis.setUpperBound(80);
-        yAxis.setTickUnit(10);
-        xAxis.setOnMouseClicked((MouseEvent event) -> {
-            Dialog<String> setXDialog = new Dialog<>();
-            setXDialog.setTitle("Reset x range");
-            Label minXLabel = new Label("Min: ");
-            Label maxXLabel = new Label("Max: ");
-            TextField minXInput = new TextField();
-            TextField maxXInput = new TextField();
-            GridPane setXGrid = new GridPane();
-            setXGrid.add(minXLabel, 1,1);
-            setXGrid.add(minXInput, 2,1);
-            setXGrid.add(maxXLabel, 3,1);
-            setXGrid.add(maxXInput, 4,1);
-            setXDialog.getDialogPane().setContent(setXGrid);
-            ButtonType buttonOk = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
-            setXDialog.getDialogPane().getButtonTypes().add(buttonOk);
-            setXDialog.showAndWait();
-            System.out.println(minXInput.getText());
-            System.out.println(maxXInput.getText());
-        });
-
-        yAxis.setOnMouseClicked((MouseEvent event) -> {
-            Dialog<String> setXDialog = new Dialog<>();
-            setXDialog.setTitle("Reset Axis Range");
-            Label minXLabel = new Label("Min: ");
-            Label maxXLabel = new Label("Max: ");
-            TextField minXInput = new TextField();
-            TextField maxXInput = new TextField();
-            GridPane setXGrid = new GridPane();
-            setXGrid.add(minXLabel, 1,1);
-            setXGrid.add(minXInput, 2,1);
-            setXGrid.add(maxXLabel, 3,1);
-            setXGrid.add(maxXInput, 4,1);
-            setXDialog.getDialogPane().setContent(setXGrid);
-            ButtonType buttonOk = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
-            setXDialog.getDialogPane().getButtonTypes().add(buttonOk);
-            setXDialog.showAndWait();
-            System.out.println(minXInput.getText());
-            System.out.println(maxXInput.getText());
-            try {
-                Double minInput = Double.parseDouble(minXInput.getText());
-                Double maxInput = Double.parseDouble(maxXInput.getText());
-                resetAxis(yAxis, minInput, maxInput);
-            } catch (NumberFormatException e) {
-                Alert notConvertabelToDouble = new Alert(Alert.AlertType.ERROR);
-                notConvertabelToDouble.setTitle("Input Type Error");
-                notConvertabelToDouble.setHeaderText("Couldn't convert input!");
-                notConvertabelToDouble.setContentText("Please provide a format like '12.553', '-20', ...");
-                notConvertabelToDouble.showAndWait();
-            }
-        });
+        resetAxis(xAxis, 0.0, 3000.0);
         resetAxis(yAxis, -30.0, 120.0);
+        xAxis.setOnMouseClicked(this::handleAxisClick);
+        yAxis.setOnMouseClicked(this::handleAxisClick);
     }
-
 
     private void resetAxis(NumberAxis axis, Double bound1, Double bound2) {
         Double lowerBound = min(bound1, bound2);
         Double upperBound = max(bound1, bound2);
+        axis.setAutoRanging(false);
         axis.setLowerBound(lowerBound);
         axis.setUpperBound(upperBound);
         axis.setTickUnit((upperBound - lowerBound)/10);
@@ -316,5 +261,38 @@ public class Controller {
                 yAxis.setTickUnit(10);
             }
         });
+    }
+
+    private void handleAxisClick(MouseEvent event) {
+        Dialog<String> setXDialog = new Dialog<>();
+        setXDialog.setTitle("Reset Axis Range");
+        Label minXLabel = new Label("Min: ");
+        Label maxXLabel = new Label("Max: ");
+        TextField minXInput = new TextField();
+        TextField maxXInput = new TextField();
+        GridPane setXGrid = new GridPane();
+        setXGrid.add(minXLabel, 1, 1);
+        setXGrid.add(minXInput, 2, 1);
+        setXGrid.add(maxXLabel, 3, 1);
+        setXGrid.add(maxXInput, 4, 1);
+        setXDialog.getDialogPane().setContent(setXGrid);
+        ButtonType buttonOk = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+        setXDialog.getDialogPane().getButtonTypes().add(buttonOk);
+        setXDialog.showAndWait();
+        try {
+            Double minInput = Double.parseDouble(minXInput.getText());
+            Double maxInput = Double.parseDouble(maxXInput.getText());
+            if (event.getSource().equals(yAxis)) {
+                resetAxis(yAxis, minInput, maxInput);
+            } else {
+                resetAxis(xAxis, minInput, maxInput);
+            }
+        } catch (NumberFormatException e) {
+            Alert notConvertibleToDouble = new Alert(Alert.AlertType.ERROR);
+            notConvertibleToDouble.setTitle("Input Type Error");
+            notConvertibleToDouble.setHeaderText("Couldn't convert input!");
+            notConvertibleToDouble.setContentText("Please provide a format like '12.553', '-20', ...");
+            notConvertibleToDouble.showAndWait();
+        }
     }
 }
