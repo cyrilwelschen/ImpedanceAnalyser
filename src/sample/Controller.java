@@ -101,7 +101,7 @@ public class Controller {
 
         yAxis.setOnMouseClicked((MouseEvent event) -> {
             Dialog<String> setXDialog = new Dialog<>();
-            setXDialog.setTitle("Reset y range");
+            setXDialog.setTitle("Reset Axis Range");
             Label minXLabel = new Label("Min: ");
             Label maxXLabel = new Label("Max: ");
             TextField minXInput = new TextField();
@@ -117,6 +117,17 @@ public class Controller {
             setXDialog.showAndWait();
             System.out.println(minXInput.getText());
             System.out.println(maxXInput.getText());
+            try {
+                Double minInput = Double.parseDouble(minXInput.getText());
+                Double maxInput = Double.parseDouble(maxXInput.getText());
+                resetAxis(yAxis, minInput, maxInput);
+            } catch (NumberFormatException e) {
+                Alert notConvertabelToDouble = new Alert(Alert.AlertType.ERROR);
+                notConvertabelToDouble.setTitle("Input Type Error");
+                notConvertabelToDouble.setHeaderText("Couldn't convert input!");
+                notConvertabelToDouble.setContentText("Please provide a format like '12.553', '-20', ...");
+                notConvertabelToDouble.showAndWait();
+            }
         });
         resetAxis(yAxis, -30.0, 120.0);
     }
