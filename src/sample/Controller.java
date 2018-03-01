@@ -44,37 +44,53 @@ public class Controller {
     NumberAxis xAxis;
     @FXML
     NumberAxis yAxis;
+    @FXML
+    StackPane chartContainerF;
+    @FXML
+    LineChart<Number, Number> impedanceLineChartF;
+    @FXML
+    NumberAxis xAxisF;
+    @FXML
+    NumberAxis yAxisF;
 
     public void initialize() {
-        workingDirectoryTextField.setOnMousePressed(event -> {
-            Stage secondaryStage = new Stage();
-            DirectoryChooser directoryChooser = new DirectoryChooser();
-            File selectedDirectory = directoryChooser.showDialog(secondaryStage);
+        workingDirectoryTextField.setOnMousePressed(event -> setWorkingDirectory());
 
-            if (selectedDirectory == null) {
-                workingDirectoryTextField.setPromptText("Invalid directory selected, please try again.");
-            } else {
-                workingDirectoryTextField.setText(selectedDirectory.getAbsolutePath());
-                try {
-                    setFileTreeView(selectedDirectory);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        impedanceLineChart.setAlternativeColumnFillVisible(true);
-        impedanceLineChart.setCreateSymbols(false);
-        impedanceLineChart.setLegendVisible(false);
+        setLineChartProperties(impedanceLineChart);
+        setLineChartProperties(impedanceLineChartF);
         final Rectangle zoomRect = new Rectangle();
         zoomRect.setManaged(false);
         zoomRect.setFill(Color.WHITE.deriveColor(0, 1, 1, 0.5));
         zoomRect.setAccessibleText("Rectangle");
         chartContainer.getChildren().add(zoomRect);
-        setUpZooming(zoomRect, impedanceLineChart);
+        Rectangle zoomFreq = rectangleFactory();
+        chartContainerF.getChildren().add(zoomFreq);
+        setUpZooming(zoomRect, impedanceLineChart, impedanceLineChart);
+        setUpZooming(zoomFreq, impedanceLineChartF, impedanceLineChartF);
+
+        // Axis initial boundaries
         resetAxis(xAxis, 0.0, 3000.0);
         resetAxis(yAxis, -30.0, 120.0);
         xAxis.setOnMouseClicked(this::handleAxisClick);
         yAxis.setOnMouseClicked(this::handleAxisClick);
+        resetAxis(xAxisF, 0.0, 3000.0);
+        resetAxis(yAxisF, -30.0, 120.0);
+        xAxisF.setOnMouseClicked(this::handleAxisClick);
+        yAxisF.setOnMouseClicked(this::handleAxisClick);
+    }
+
+    private Rectangle rectangleFactory() {
+        final Rectangle zoomRect = new Rectangle();
+        zoomRect.setManaged(false);
+        zoomRect.setFill(Color.WHITE.deriveColor(0, 1, 1, 0.5));
+        zoomRect.setAccessibleText("Rectangle");
+        return zoomRect;
+    }
+
+    private void setLineChartProperties(LineChart<Number, Number> lineChart){
+        lineChart.setAlternativeColumnFillVisible(true);
+        lineChart.setCreateSymbols(false);
+        lineChart.setLegendVisible(false);
     }
 
     private void resetAxis(NumberAxis axis, Double bound1, Double bound2) {
@@ -204,7 +220,7 @@ public class Controller {
         setOnMouseEventOnSeries(series.getNode(), impedanceLineChart, pathToCsvFile.getFileName().toString());
     }
 
-    private void setUpZooming(final Rectangle rect, final Node zoomingNode) {
+    private void setUpZooming(final Rectangle rect, final Node zoomingNode, LineChart<Number, Number> lineChart) {
         final ObjectProperty<Point2D> mouseAnchor = new SimpleObjectProperty<>();
         AxisController axisController = new AxisController();
         zoomingNode.setOnMouseDragged(dragEvent -> {
@@ -221,9 +237,9 @@ public class Controller {
             rect.setHeight(0);
             double xS = event.getSceneX();
             double yS = event.getSceneY();
-            final NumberAxis xAxisZ = (NumberAxis) impedanceLineChart.getXAxis();
+            final NumberAxis xAxisZ = (NumberAxis) lineChart.getXAxis();
             double AXxS = xAxisZ.localToScene(0, 0).getX();
-            final NumberAxis yAxisZ = (NumberAxis) impedanceLineChart.getYAxis();
+            final NumberAxis yAxisZ = (NumberAxis) lineChart.getYAxis();
             double AYyS = yAxisZ.localToScene(0, 0).getY();
             double newXMin = (xS - AXxS) / xAxisZ.getScale();
             double newYMax = (yS - AYyS) / yAxisZ.getScale() + 80.0;
@@ -233,9 +249,9 @@ public class Controller {
             if (rect.getWidth() > 10 && rect.getHeight() > 10) {
                 double xS = event.getSceneX();
                 double yS = event.getSceneY();
-                final NumberAxis xAxisZ = (NumberAxis) impedanceLineChart.getXAxis();
+                final NumberAxis xAxisZ = (NumberAxis) lineChart.getXAxis();
                 double AXxS = xAxisZ.localToScene(0, 0).getX();
-                final NumberAxis yAxisZ = (NumberAxis) impedanceLineChart.getYAxis();
+                final NumberAxis yAxisZ = (NumberAxis) lineChart.getYAxis();
                 double AYyS = yAxisZ.localToScene(0, 0).getY();
                 double newXMax = (xS - AXxS) / xAxisZ.getScale();
                 double newYMin = (yS - AYyS) / yAxisZ.getScale() + 80.0;
@@ -253,6 +269,8 @@ public class Controller {
         });
         zoomingNode.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
+                final NumberAxis xAxis = (NumberAxis) lineChart.getXAxis();
+                final NumberAxis yAxis = (NumberAxis) lineChart.getYAxis();
                 xAxis.setLowerBound(0);
                 xAxis.setUpperBound(5000);
                 xAxis.setTickUnit(200);
@@ -284,8 +302,12 @@ public class Controller {
             Double maxInput = Double.parseDouble(maxXInput.getText());
             if (event.getSource().equals(yAxis)) {
                 resetAxis(yAxis, minInput, maxInput);
-            } else {
+            } else if (event.getSource().equals(xAxis)) {
                 resetAxis(xAxis, minInput, maxInput);
+            } else if (event.getSource().equals(xAxisF)) {
+                resetAxis(xAxisF, minInput, maxInput);
+            } else if (event.getSource().equals(yAxisF)) {
+                resetAxis(yAxisF, minInput, maxInput);
             }
         } catch (NumberFormatException e) {
             Alert notConvertibleToDouble = new Alert(Alert.AlertType.ERROR);
@@ -293,6 +315,23 @@ public class Controller {
             notConvertibleToDouble.setHeaderText("Couldn't convert input!");
             notConvertibleToDouble.setContentText("Please provide a format like '12.553', '-20', ...");
             notConvertibleToDouble.showAndWait();
+        }
+    }
+
+    private void setWorkingDirectory() {
+        Stage secondaryStage = new Stage();
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        File selectedDirectory = directoryChooser.showDialog(secondaryStage);
+
+        if (selectedDirectory == null) {
+            workingDirectoryTextField.setPromptText("Invalid directory selected, please try again.");
+        } else {
+            workingDirectoryTextField.setText(selectedDirectory.getAbsolutePath());
+            try {
+                setFileTreeView(selectedDirectory);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
