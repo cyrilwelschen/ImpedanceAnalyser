@@ -259,7 +259,7 @@ public class Controller {
             final NumberAxis yAxisZ = (NumberAxis) lineChart.getYAxis();
             double AYyS = yAxisZ.localToScene(0, 0).getY();
             double newXMin = (xS - AXxS) / xAxisZ.getScale();
-            double newYMax = (yS - AYyS) / yAxisZ.getScale() + 120.0;
+            double newYMax = (yS - AYyS) / yAxisZ.getScale() + yAxisZ.getUpperBound();
             axisController.setNewXMinYMax(newXMin, newYMax);
         });
         zoomingNode.setOnMouseReleased(event -> {
@@ -271,7 +271,7 @@ public class Controller {
                 final NumberAxis yAxisZ = (NumberAxis) lineChart.getYAxis();
                 double AYyS = yAxisZ.localToScene(0, 0).getY();
                 double newXMax = (xS - AXxS) / xAxisZ.getScale();
-                double newYMin = (yS - AYyS) / yAxisZ.getScale() + 120.0;
+                double newYMin = (yS - AYyS) / yAxisZ.getScale() + yAxisZ.getUpperBound();
                 double newXMin = axisController.getNewXMin();
                 double newYMax = axisController.getNewYMax();
                 xAxisZ.setLowerBound(min(newXMin, newXMax));
