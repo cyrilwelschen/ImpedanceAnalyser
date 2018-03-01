@@ -57,15 +57,13 @@ public class Controller {
         workingDirectoryTextField.setOnMousePressed(event -> setWorkingDirectory());
 
         setLineChartProperties(impedanceLineChart);
-        setLineChartProperties(impedanceLineChartF);
-        final Rectangle zoomRect = new Rectangle();
-        zoomRect.setManaged(false);
-        zoomRect.setFill(Color.WHITE.deriveColor(0, 1, 1, 0.5));
-        zoomRect.setAccessibleText("Rectangle");
+        Rectangle zoomRect = rectangleFactory();
         chartContainer.getChildren().add(zoomRect);
+        setUpZooming(zoomRect, impedanceLineChart, impedanceLineChart);
+
+        setLineChartProperties(impedanceLineChartF);
         Rectangle zoomFreq = rectangleFactory();
         chartContainerF.getChildren().add(zoomFreq);
-        setUpZooming(zoomRect, impedanceLineChart, impedanceLineChart);
         setUpZooming(zoomFreq, impedanceLineChartF, impedanceLineChartF);
 
         // Axis initial boundaries
@@ -73,6 +71,7 @@ public class Controller {
         resetAxis(yAxis, -30.0, 120.0);
         xAxis.setOnMouseClicked(this::handleAxisClick);
         yAxis.setOnMouseClicked(this::handleAxisClick);
+        //todo: set frequency x defaults different to dist x defaults (auto-recognize in resetAxis method
         resetAxis(xAxisF, 0.0, 3000.0);
         resetAxis(yAxisF, -30.0, 120.0);
         xAxisF.setOnMouseClicked(this::handleAxisClick);
@@ -271,12 +270,8 @@ public class Controller {
             if (event.getButton() == MouseButton.SECONDARY) {
                 final NumberAxis xAxis = (NumberAxis) lineChart.getXAxis();
                 final NumberAxis yAxis = (NumberAxis) lineChart.getYAxis();
-                xAxis.setLowerBound(0);
-                xAxis.setUpperBound(5000);
-                xAxis.setTickUnit(200);
-                yAxis.setLowerBound(-20);
-                yAxis.setUpperBound(80);
-                yAxis.setTickUnit(10);
+                resetAxis(xAxis, 0.0, 3000.0);
+                resetAxis(yAxis, -30.0, 120.0);
             }
         });
     }
