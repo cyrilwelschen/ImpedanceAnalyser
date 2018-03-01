@@ -4,6 +4,8 @@
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -22,22 +24,50 @@
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding></TreeView>
-                  <AnchorPane style="-fx-background-color: #2b2b2b;">
-                     <children>
-                        <StackPane fx:id="chartContainer" prefHeight="809.0" prefWidth="1355.0" style="-fx-background-color: #2b2b2b;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <LineChart fx:id="impedanceLineChart" stylesheets="@../chart.css" title="Impedance vs Distance">
-                                <xAxis>
-                                  <NumberAxis side="BOTTOM" style="-fx-background-color: #2b2b2b;" tickLabelFill="#e1d8d8" fx:id="xAxis" />
-                                </xAxis>
-                                <yAxis>
-                                  <NumberAxis fx:id="yAxis" side="LEFT" style="-fx-background-color: #2b2b2b;" tickLabelFill="#e1d8d8" />
-                                </yAxis>
-                              </LineChart>
-                           </children>
-                        </StackPane>
-                     </children>
-                  </AnchorPane>
+                  <TabPane fx:id="impDistTabPane" style="-fx-background-color: #2b2b2b;">
+                     <tabs>
+                        <Tab id="impDistTabID" fx:id="impDistTab" closable="false" text="ImpDist">
+                           <content>
+                              <AnchorPane style="-fx-background-color: #2b2b2b;">
+                                 <children>
+                                    <StackPane fx:id="chartContainer" prefHeight="809.0" prefWidth="1355.0" style="-fx-background-color: #2b2b2b;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <LineChart fx:id="impedanceLineChart" stylesheets="@../chart.css" title="Impedance vs Distance">
+                                            <xAxis>
+                                              <NumberAxis side="BOTTOM" style="-fx-background-color: #2b2b2b;" tickLabelFill="#e1d8d8" fx:id="xAxis" />
+                                            </xAxis>
+                                            <yAxis>
+                                              <NumberAxis fx:id="yAxis" side="LEFT" style="-fx-background-color: #2b2b2b;" tickLabelFill="#e1d8d8" />
+                                            </yAxis>
+                                          </LineChart>
+                                       </children>
+                                    </StackPane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab id="impFreqTabID" fx:id="impFreqTab" closable="false" text="ImpFreq">
+                           <content>
+                              <AnchorPane style="-fx-background-color: #2b2b2b;">
+                                 <children>
+                                    <StackPane fx:id="chartContainerF" prefHeight="809.0" prefWidth="1355.0" style="-fx-background-color: #2b2b2b;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <children>
+                                          <LineChart fx:id="impedanceLineChartF" stylesheets="@../chart.css" title="Impedance vs Distance">
+                                            <xAxis>
+                                              <NumberAxis side="BOTTOM" style="-fx-background-color: #2b2b2b;" tickLabelFill="#e1d8d8" fx:id="xAxisF" />
+                                            </xAxis>
+                                            <yAxis>
+                                              <NumberAxis fx:id="yAxisF" side="LEFT" style="-fx-background-color: #2b2b2b;" tickLabelFill="#e1d8d8" />
+                                            </yAxis>
+                                          </LineChart>
+                                       </children>
+                                    </StackPane>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                     </tabs>
+                  </TabPane>
                </items>
             </SplitPane>
          </center>
