@@ -144,23 +144,29 @@ public class Controller {
                         } else {
                             System.out.println("Hidden Calculated file already exists. Not calculating it again!");
                         }
-                        readCsv(currentPath);
-                    } else { // todo: make this counter through business nicer
-                        int indexToDelete = 0;
-                        int counter = 0;
-                        for (XYChart.Series<Number, Number> cr : impedanceLineChart.getData()) {
-                            if (cr.getName().equals(currentPath.getFileName().toString())) {
-                                indexToDelete = counter;
-                            } else {
-                                counter++;
-                            }
-                        }
-                        impedanceLineChart.getData().remove(indexToDelete);
+                        readCsv(currentPath, "HIDDEN_CALCULATED_IMPDIST_", impedanceLineChart);
+                        readCsv(currentPath, "HIDDEN_CALCULATED_IMPFREQ_", impedanceLineChartF);
+                    } else {
+                        removeSeriesFromChart(currentPath, impedanceLineChart);
+                        removeSeriesFromChart(currentPath, impedanceLineChartF);
                     }
                 });
             }
         }
         directoryTreeView.setRoot(rootItem);
+    }
+
+    private void removeSeriesFromChart(Path pathToCsv, LineChart<Number, Number> lineChart) {
+        int indexToDelete = 0;
+        int counter = 0;
+        for (XYChart.Series<Number, Number> cr : lineChart.getData()) {
+            if (cr.getName().equals(pathToCsv.getFileName().toString())) {
+                indexToDelete = counter;
+            } else {
+                counter++;
+            }
+        }
+        lineChart.getData().remove(indexToDelete);
     }
 
     private CheckBoxTreeItem<String> findCurrentRootItem(List<CheckBoxTreeItem<String>> rootItemList, String parentPathString, CheckBoxTreeItem<String> rootItem) {
@@ -191,14 +197,14 @@ public class Controller {
         Runtime.getRuntime().exec(command);
     }
 
-    private void readCsv(Path pathToCsvFile) {
+    private void readCsv(Path pathToCsvFile, String hiddenPrefix, LineChart<Number, Number> lineChart) {
         BufferedReader br = null;
         String line;
         String cvsSplitBy = ",";
 
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
         series.setName(pathToCsvFile.getFileName().toString());
-        String csvHiddenFile = Paths.get(pathToCsvFile.getParent().toString(), "HIDDEN_CALCULATED_IMPDIST_" + pathToCsvFile.getFileName().toString()).toString();
+        String csvHiddenFile = Paths.get(pathToCsvFile.getParent().toString(), hiddenPrefix  + pathToCsvFile.getFileName().toString()).toString();
         try {
             br = new BufferedReader(new FileReader(csvHiddenFile));
             while ((line = br.readLine()) != null) {
@@ -219,8 +225,8 @@ public class Controller {
                 }
             }
         }
-        impedanceLineChart.getData().add(series);
-        setOnMouseEventOnSeries(series.getNode(), impedanceLineChart, pathToCsvFile.getFileName().toString());
+        lineChart.getData().add(series);
+        setOnMouseEventOnSeries(series.getNode(), lineChart, pathToCsvFile.getFileName().toString());
     }
 
     private void setUpZooming(final Rectangle rect, final Node zoomingNode, LineChart<Number, Number> lineChart) {
