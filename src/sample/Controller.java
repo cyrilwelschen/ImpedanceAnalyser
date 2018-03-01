@@ -32,6 +32,7 @@ import static java.lang.Double.max;
 import static java.lang.Double.min;
 
 public class Controller {
+    private String currentChartTitle = "";
     @FXML
     TextField workingDirectoryTextField;
     @FXML
@@ -173,8 +174,11 @@ public class Controller {
     }
 
     private void setOnMouseEventOnSeries(Node node, final LineChart chart, final String label) {
-        node.setOnMouseExited(event -> chart.setTitle("Impedance vs Distance"));
-        node.setOnMouseEntered(event -> chart.setTitle(label));
+        node.setOnMouseExited(event -> chart.setTitle(currentChartTitle));
+        node.setOnMouseEntered(event -> {
+            currentChartTitle = chart.getTitle();
+            chart.setTitle(label);
+        });
     }
 
     private void calculateInverseFourierTransform(Path pathToFile) throws IOException {
