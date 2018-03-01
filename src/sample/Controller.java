@@ -32,7 +32,6 @@ import static java.lang.Double.max;
 import static java.lang.Double.min;
 
 public class Controller {
-    private String currentChartTitle = "";
     @FXML
     TextField workingDirectoryTextField;
     @FXML
@@ -53,6 +52,15 @@ public class Controller {
     NumberAxis xAxisF;
     @FXML
     NumberAxis yAxisF;
+    private String currentChartTitle = "";
+    private final Double DEFAULT_X_MIN_DIST = 0.0;
+    private final Double DEFAULT_X_MAX_DIST = 2500.0;
+    private final Double DEFAULT_Y_MIN_DIST = -30.0;
+    private final Double DEFAULT_Y_MAX_DIST = 120.0;
+    private final Double DEFAULT_X_MIN_FREQ = 0.0;
+    private final Double DEFAULT_X_MAX_FREQ = 1000000.0;
+    private final Double DEFAULT_Y_MIN_FREQ = 0.0;
+    private final Double DEFAULT_Y_MAX_FREQ = 300.0;
 
     public void initialize() {
         workingDirectoryTextField.setOnMousePressed(event -> setWorkingDirectory());
@@ -68,13 +76,13 @@ public class Controller {
         setUpZooming(zoomFreq, impedanceLineChartF, impedanceLineChartF);
 
         // Axis initial boundaries
-        resetAxis(xAxis, 0.0, 3000.0);
-        resetAxis(yAxis, -30.0, 120.0);
+        resetAxis(xAxis, DEFAULT_X_MIN_DIST, DEFAULT_X_MAX_DIST);
+        resetAxis(yAxis, DEFAULT_Y_MIN_DIST, DEFAULT_Y_MAX_DIST);
         xAxis.setOnMouseClicked(this::handleAxisClick);
         yAxis.setOnMouseClicked(this::handleAxisClick);
         //todo: set frequency x defaults different to dist x defaults (auto-recognize in resetAxis method
-        resetAxis(xAxisF, 0.0, 3000.0);
-        resetAxis(yAxisF, -30.0, 120.0);
+        resetAxis(xAxisF, DEFAULT_X_MIN_FREQ, DEFAULT_X_MAX_FREQ);
+        resetAxis(yAxisF, DEFAULT_Y_MIN_FREQ, DEFAULT_Y_MAX_FREQ);
         xAxisF.setOnMouseClicked(this::handleAxisClick);
         yAxisF.setOnMouseClicked(this::handleAxisClick);
     }
@@ -251,7 +259,7 @@ public class Controller {
             final NumberAxis yAxisZ = (NumberAxis) lineChart.getYAxis();
             double AYyS = yAxisZ.localToScene(0, 0).getY();
             double newXMin = (xS - AXxS) / xAxisZ.getScale();
-            double newYMax = (yS - AYyS) / yAxisZ.getScale() + 80.0;
+            double newYMax = (yS - AYyS) / yAxisZ.getScale() + 120.0;
             axisController.setNewXMinYMax(newXMin, newYMax);
         });
         zoomingNode.setOnMouseReleased(event -> {
@@ -263,7 +271,7 @@ public class Controller {
                 final NumberAxis yAxisZ = (NumberAxis) lineChart.getYAxis();
                 double AYyS = yAxisZ.localToScene(0, 0).getY();
                 double newXMax = (xS - AXxS) / xAxisZ.getScale();
-                double newYMin = (yS - AYyS) / yAxisZ.getScale() + 80.0;
+                double newYMin = (yS - AYyS) / yAxisZ.getScale() + 120.0;
                 double newXMin = axisController.getNewXMin();
                 double newYMax = axisController.getNewYMax();
                 xAxisZ.setLowerBound(min(newXMin, newXMax));
@@ -280,8 +288,14 @@ public class Controller {
             if (event.getButton() == MouseButton.SECONDARY) {
                 final NumberAxis xAxis = (NumberAxis) lineChart.getXAxis();
                 final NumberAxis yAxis = (NumberAxis) lineChart.getYAxis();
-                resetAxis(xAxis, 0.0, 3000.0);
-                resetAxis(yAxis, -30.0, 120.0);
+                // todo: implement to go back to last settings (not all the way back to default)
+                if (lineChart.getId().equals("impedanceLineChart")) {
+                    resetAxis(xAxis, DEFAULT_X_MIN_DIST, DEFAULT_X_MAX_DIST);
+                    resetAxis(yAxis, DEFAULT_Y_MIN_DIST, DEFAULT_Y_MAX_DIST);
+                } else if (lineChart.getId().equals("impedanceLineChartF")) {
+                    resetAxis(xAxis, DEFAULT_X_MIN_FREQ, DEFAULT_X_MAX_FREQ);
+                    resetAxis(yAxis, DEFAULT_Y_MIN_FREQ, DEFAULT_Y_MAX_FREQ);
+                }
             }
         });
     }
